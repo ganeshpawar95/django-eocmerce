@@ -1,0 +1,71 @@
+{% extends 'shop/base.html'   %}
+
+{% block body %}
+
+
+<div class="container"> 
+
+<p> {% if messages %}
+<div class="alert alert-success" role="alert">
+    {% for message in messages %}
+
+<p>   {{ message }}</p>
+    {% endfor %}
+</div>
+{% endif %}</p>
+
+<h1> manage brand</h1>
+<hr>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">id</th>
+      <th scope="col">category name</th>
+      <th scope="col">brand name</th>
+      <th scope="col">action</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+  	{% for post in users %}
+    <tr>
+      <th scope="row">{{post.id}}</th>
+      <td>{{post.cat_name}}</td>
+      <td>{{post.bran_name}}</td>
+      <td><a  href="/brand/edit_brand/{{post.id}}"><button type="button" class="btn btn-primary">Edit</button></a>
+
+      	<a  href="/brand/delete_brand/{{post.id}}"><button type="button" class="btn btn-danger">Delete</button></a></td>
+      
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% if users.has_other_pages %}
+  <ul class="pagination">
+    {% if users.has_previous %}
+      <li><a href="?page={{ users.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in users.paginator.page_range %}
+      {% if users.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if users.has_next %}
+      <li><a href="?page={{ users.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+
+</div>
+
+
+
+
+{% endblock %}

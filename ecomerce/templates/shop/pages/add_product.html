@@ -1,0 +1,180 @@
+{% extends 'shop/base.html'   %}
+
+{% block body %}
+<style type="text/css">
+  
+.h {
+    width: 166px;
+}
+.form-control {
+    display: block;
+    width: 70%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+}
+</style>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<div class="container">
+<div class='row'>
+
+<div class="alert alert-primary" role="alert">
+ <h2> Add product</h2>
+</div>
+
+<div class='col-lg-6'>
+  
+<form method="POST" id="addUser" enctype="multipart/form-data">
+  	{% csrf_token %}
+    <div class="form-group">
+    <label for="exampleInputEmail1">Product Title:</label>
+    <input type="text" name="pro_title" class="form-control" id="pro_title" >
+   
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlTextarea1">Product Description</label>
+    <textarea class="form-control" name="product_desc" id="product_desc" rows="3"></textarea>
+  </div>
+  
+   <div class="form-group">
+      <label for="sel1">Select category  :</label>
+      <select class="form-control h"  onchange="getProducts()" name='cat_name' id="cat_name">
+        {% for post in post%}
+        <option value="{{post.cat_name}}">{{post.cat_name}}</option>
+        {% endfor %}
+        
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="sel1">Select brand  :</label>
+      <select class="form-control h" name="bran_name" id="bran_name">
+      </select>
+    </div>
+  <div class="form-group">
+    <label for="exampleInputEmail1">Price</label>
+    <input type="number" name="price" class="form-control" id="price" >
+  </div>
+  <div class="form-group">
+    <label for="exampleInputEmail1">quantity</label>
+    <input type="number" name="quantity" class="form-control" id="quantity" >
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlFile1">Product image</label>
+    <input type="file" name="image" class="form-control-file" id="image">
+  </div>
+  <div class="form-group">
+      <label for="sel1">Select Product status  :</label>
+      <select class="form-control h" id="status" name="status">
+        <option value="Active">Active</option>
+        <option value="Disapproved">Disapproved</option>
+        <option value="Expiring">Expiring</option>
+      </select>
+    </div>
+  <button type="submit"  id='btn_submit' class="btn btn-primary">save</button>
+</form>
+</div>
+</div>
+</div>
+<script type="text/javascript" charset="utf-8">
+     $(document).ready(function() {
+        $("#bran_name").removeAttr("onchange");
+    });
+    function getProducts(){
+        var cat_name = $('#cat_name').val();
+        $.getJSON("/load_brandView/",{cat_name: cat_name}, function(j){
+               
+                     var options = '<option value="">---------</option>';
+                     for (var i = 0; i < j.length; i++) {
+                         options += '<option value="' + j[i].bran_name + '">' + j[i].bran_name + '</option>';
+                     }
+                   
+                     // inspect html to check id of subcategory select dropdown.
+                     $("#bran_name").html(options);
+                 });
+        }
+    </script>
+
+
+<script type="text/javascript">
+    
+// $(document).ready(function(){
+//     $('#btn_submit').on('click', function(){
+//         $pro_title = $('#pro_title').val();
+//         $product_desc = $('#product_desc').val();
+//         $price = $('#price').val();
+//         $quantity = $('#quantity').val();
+//         $image = $('#image').val();
+//         $status = $('#status').val();
+//         $cat_name = $('#cat_name').val();
+//         $bran_name = $('#bran_name').val();
+//         if($('#cat_name').val() == "" || $('#bran_name').val() == "" || $('#product_desc').val() == ""|| $('#pro_title').val() == ""|| $('#price').val() == ""|| $('#quantity').val() == ""|| $('#image').val() == ""|| $('#status').val() == ""){
+//            swal(" Please fill up the required field");
+//         }else{
+//             $.ajax({
+//                 type: "POST",
+
+//                 url : "{% url 'add_product' %}",
+//                 data: {
+//                     pro_title: $pro_title,
+//                     product_desc: $product_desc,
+//                     price: $price,
+//                     quantity: $quantity,
+//                     image: $image,
+//                     status:$status,
+//                     bran_name:$bran_name,
+//                     cat_name:$cat_name,
+//                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+//                 },
+               
+//                 success: function(data){
+//                  console.log(data);
+//                     swal("category add succesfully");
+            
+                    
+                   
+//                 }
+//             });
+//         }
+ 
+//     });
+// });
+$("form#addUser").submit(function(e) {
+  e.preventDefault();
+  $form = $(this)
+  var formData = new FormData(this);
+  $pro_title = $('#pro_title').val();
+  if($('#pro_title').val() == "")
+  {
+  alert('enter pro_title ')
+  } else{     
+  $.ajax({
+    type:'POST',
+    url: '{% url "add_product" %}',
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function () {
+      alert('Product add succesfully')
+           window.location.reload();
+}
+});
+}
+});
+
+</script>
+{% endblock %}

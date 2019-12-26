@@ -1,0 +1,39 @@
+{% extends 'web/baseweb.html'   %}
+
+{% block body %}
+<style type="text/css">
+	
+	.col-lg-4 {
+    margin-top: 54px;
+}
+.col-lg-6 {
+    margin-top: 60px;
+}
+footer.container {
+    margin-top: 42px;
+}
+</style>
+<div class="container">
+<div class="row">
+	<div class="col-lg-6">
+	<img src="{{post.image.url}}" width="500px" height="500px" >
+	</div>
+	<div class="col-lg-6">
+		<p>{{post.pro_title}}</p>
+		<h3>Description</h3><p>{{post.product_desc}}</p>
+
+		<h1>₹{{post.price}}</h1>
+		
+		<br>
+		<form action="/cart/cart_add/{{post.id}}" method="post">
+                                {% csrf_token %}
+                                {{ form }}
+                                <input type="submit" value="add to cart" class="btn btn-primary">
+                            </form>
+        
+		
+	</div>
+</div>
+
+</div>
+{% endblock %}

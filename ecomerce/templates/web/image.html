@@ -1,0 +1,63 @@
+
+<html>
+<head>
+	<title>image</title>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<body>
+	<div class="container">
+<form method="POST" id="addUser" enctype="multipart/form-data">
+  	{% csrf_token %}
+  <div class="form-group">
+    <label for="exampleFormControlFile1">Product image</label>
+    <input type="file" name="image" class="form-control-file" id="image">
+  </div>
+  <button type="submit"  id='btn_submit' class="btn btn-primary">save</button>
+</form>
+
+<br>
+<table class="table">
+  <thead>
+    <tr>
+      
+      <th scope="col">image name</th>
+      <th>iamge</th>
+      <th scope="col">action</th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for post  in post%}
+    <tr>
+      <td>{{post.image}}  </td>
+      
+      <td><a href="/upimage/edit_image/{{post.id}}"><button type="button" class="btn btn-danger">edit</button></a></td>
+     
+    </tr>
+   {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<script type="text/javascript">
+$("form#addUser").submit(function(e) {
+  e.preventDefault();
+  $form = $(this)
+  var formData = new FormData(this);
+  $.ajax({
+    type:'POST',
+    url: "/upimage/" ,
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+       alert('image insert')
+             window.location.reload();
+}
+});
+
+});
+
+</script>
+</body>
+</html>

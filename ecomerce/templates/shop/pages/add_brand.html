@@ -1,0 +1,73 @@
+{% extends 'shop/base.html'   %}
+
+{% block body %}
+<style type="text/css">
+  
+.h {
+    width: 166px;
+}
+
+</style>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<div class="container">
+<div class='row'>
+
+<div class="alert alert-primary" role="alert">
+<h2> Add brnad</h2>
+</div>
+<div class='col-lg-6'>
+<form method="POST">
+  	{% csrf_token %}
+
+  
+   <div class="form-group">
+      <label for="sel1">Select category  :</label>
+      <select class="form-control h" id="cat_name">
+        {% for post in post%}
+        <option value="{{post.cat_name}}">{{post.cat_name}}</option>
+        {% endfor %}
+        
+      </select>
+    </div>
+  <div class="form-group">
+  <label for="exampleFormControlTextarea1"> brand name </label>
+  <textarea class="form-control rounded-0"  id="bran_name" rows="5"></textarea>
+</div>
+  <button type="button"  id='btn_submit' class="btn btn-primary">save</button>
+</form>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+    
+$(document).ready(function(){
+    $('#btn_submit').on('click', function(){
+        $cat_name = $('#cat_name').val();
+        $bran_name = $('#bran_name').val();
+        if($('#cat_name').val() == "" || $('#bran_name').val() == "" ){
+           swal(" Please fill up the required field");
+        }else{
+            $.ajax({
+                type: "POST",
+                url : "/brand/",
+                data: {
+                    cat_name: $cat_name,
+                    bran_name:$bran_name,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(){
+                    swal("category add succesfully");
+            
+                    return window.location.href = '/brand/manage_brnad'; 
+                   
+                }
+            });
+        }
+ 
+    });
+});
+
+
+</script>
+{% endblock %}

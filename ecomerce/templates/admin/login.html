@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>login</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+  <style>
+  .form_style
+  {
+   width: 600px;
+   margin: 0 auto;
+  }
+  </style>
+ </head>
+ <body>
+  <br />
+   <h3 align="center"></h3>
+  <br />
+
+  <div ng-app="login_register_app" ng-controller="login_register_controller" class="container form_style">
+
+  {% if messages %}
+<div class="alert alert-danger" role="alert">
+    {% for message in messages %}
+
+<p>   {{ message }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+   <div class="panel panel-default" ng-show="login_form">
+    <div class="panel-heading">
+     <h3 class="panel-title">Login</h3>
+    </div>
+    <div class="panel-body">
+     <form method="post" action="/login/">
+      {% csrf_token %}
+	  <div class="form-group">
+       <label>username</label>
+       <input type="text" name="name" ng-model="loginData.name" class="form-control" />
+      </div>
+      <div class="form-group">
+       <label>password</label>
+       <input type="text" name="password" ng-model="loginData.password" class="form-control" />
+      </div>
+      <div class="form-group" align="center">
+       <input type="submit" name="login" class="btn btn-primary" value="Login" />
+       <br />
+       
+      </div>
+     </form>
+    </div>
+   </div>
+
+   <div class="panel panel-default" ng-show="register_form">
+    <div class="panel-heading">
+     <h3 class="panel-title">Register</h3>
+    </div>
+    <div class="panel-body">
+     <form name="myForm" method="post" action="/login/register" onsubmit="return validateForm()">
+      {% csrf_token %}
+
+       <div class="form-group">
+       <label>Enter Your Name</label>
+       <input type="text" name="name"  class="form-control" />
+
+      </div>
+      <div class="form-group">
+       <label>Enter Your Email</label>
+       <input type="text" name="Email" class="form-control" />
+      </div>
+      <div class="form-group">
+       <label>Enter Your Password</label>
+       <input type="password" name="password" class="form-control" />
+      </div>
+      <div class="form-group" align="center">
+       <input type="submit"  class="btn btn-primary" value="Register" />
+       <br />
+       <input type="button" name="login_link" class="btn btn-primary btn-link" ng-click="showLogin()" value="Login" />
+      </div>
+     </form>
+    </div>
+   </div>
+
+
+
+  </div>
+ </body>
+</html>
+<script>
+function validateForm() {
+  var x = document.forms["myForm"]["name"].value;
+  if (x == "") {
+    alert("Name must be filled out");
+    return false;
+  }
+   var x = document.forms["myForm"]["Email"].value;
+  if (x == "") {
+    alert("enter your email ");
+    return false;
+  }
+   var x = document.forms["myForm"]["password"].value;
+  if (x == "") {
+    alert("enter your password");
+    return false;
+  }
+}
+</script>
+<script>
+var app = angular.module('login_register_app', []);
+app.controller('login_register_controller', function($scope, $http){
+ $scope.closeMsg = function(){
+  $scope.alertMsg = false;
+ };
+
+ $scope.login_form = true;
+
+ $scope.showRegister = function(){
+  $scope.login_form = false;
+  $scope.register_form = true;
+  $scope.alertMsg = false;
+ };
+
+ $scope.showLogin = function(){
+  $scope.register_form = false;
+  $scope.login_form = true;
+  $scope.alertMsg = false;
+ };
+
+ $scope.submitRegister = function(){
+  var csrf ='{{ csrf_token }}';
+  $http({
+   method:"POST",
+   headers: {'X-CSRFToken' : csrf },
+   url:"register",
+   data:$scope.registerData
+  }).success(function(data){
+   $scope.alertMsg = true;
+   if(data.error != '')
+   {
+    $scope.alertClass = 'alert-danger';
+    $scope.alertMessage = data.error;
+   }
+   else
+   {
+    $scope.alertClass = 'alert-success';
+    $scope.alertMessage = data.message;
+    $scope.registerData = {};
+   }
+  });
+ };
+
+ $scope.submitLogin = function(){
+  $http.defaults.headers.common['Content-Type']= "application/json";
+  $http({
+   method:"POST",
+   url:'https://staging-project.vsrlogic.com/api/v1',
+   data:$scope.loginData
+  }).success(function(data){
+   if(data.error != '')
+   {
+    $scope.alertMsg = true;
+    $scope.alertClass = 'alert-danger';
+    $scope.alertMessage = data.error;
+   }
+   else
+   {
+    location.reload();
+   }
+  });
+ };
+
+});
+</script>

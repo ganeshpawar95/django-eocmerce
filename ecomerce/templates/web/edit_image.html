@@ -1,0 +1,45 @@
+
+<html>
+<head>
+	<title>image</title>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<body>
+	<div class="container">
+<form method="POST" id="addUser" enctype="multipart/form-data">
+  	{% csrf_token %}
+  <div class="form-group">
+    <label for="exampleFormControlFile1">Product image</label>
+    <br>
+     {{ form.image }}  
+     <br>
+    <img src="{{post.image.url}}" height="100px" width="100px">
+  </div>
+  <button type="submit"  id='btn_submit' class="btn btn-primary">update</button>
+</form>
+</div>
+<script type="text/javascript">
+$("form#addUser").submit(function(e) {
+  e.preventDefault();
+  $form = $(this)
+  var formData = new FormData(this);
+  $image = $('#image').val();
+  $.ajax({
+    type:'POST',
+    url: "/upimage/edit_image/{{post.id}}" ,
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+      console.log(response)
+       alert('image update')
+             window.location.reload();
+}
+});
+
+});
+
+</script>
+</body>
+</html>

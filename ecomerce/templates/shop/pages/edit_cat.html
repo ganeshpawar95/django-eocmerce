@@ -1,0 +1,56 @@
+{% extends 'shop/base.html'   %}
+
+{% block body %}
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<div class="container">
+<div class='row'>
+
+<div class="alert alert-primary" role="alert">
+<h2> edit category</h2>
+</div>
+<div class='col-lg-6'>
+<form method="POST">
+  	{% csrf_token %}
+  <div class="form-group">
+  <label for="exampleFormControlTextarea1"> category name </label>
+  <textarea class="form-control rounded-0"  id="cat_name" rows="5"> {{post.cat_name}}</textarea>
+</div>
+  <button type="button"  id='btn_submit' class="btn btn-primary">update</button>
+</form>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+    
+$(document).ready(function(){
+    $('#btn_submit').on('click', function(){
+        $cat_name = $('#cat_name').val();
+        
+ 
+        if($('#cat_name').val() == "" ){
+           swal(" Please fill up the required field");
+          
+        }else{
+            $.ajax({
+                type: "POST",
+                url : "/shop/edit_cat/{{post.id}}",
+                data: {
+                    cat_name: $cat_name,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+
+                success: function(){
+                  
+                    swal("category add succesfully");
+                    return window.location.href = '/shop/manage_cat'; 
+                   
+                }
+            });
+        }
+ 
+    });
+});
+
+
+</script>
+{% endblock %}
